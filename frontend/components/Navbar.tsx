@@ -9,7 +9,6 @@ import {useEffect, useState } from 'react';
 import { IoIosArrowBack } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { setShowSearch } from '@/features/ProductSlice';
-import { getCartCount, setCartItems } from '@/features/CartSlice';
 import { RootState } from '@/store/store';
 import { AppDispatch } from "@/store/store"
 import { setToken } from '@/features/userSlice';
@@ -47,8 +46,6 @@ export const Navbar = () => {
         router.push("/login");
         localStorage.clear();
         dispatch(setToken('')); 
-        dispatch(setCartItems({})) 
-
     };
   
    const {data: totalcount}=useQuery({

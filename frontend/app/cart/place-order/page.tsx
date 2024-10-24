@@ -53,12 +53,15 @@ const PlaceOrderpage = () => {
   
       try {
         const token=localStorage.getItem('token')
+
         let orderData={
           address: formData
         }
+
         if (!token) {
           toast.error("Please login to place an order");
-          return;
+          router.replace("/login")
+          return null;
         }
 
         switch(selected){
@@ -71,11 +74,30 @@ const PlaceOrderpage = () => {
            if(response.data.success){
             queryClient.invalidateQueries({ queryKey: ["cart"] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });
-            router.push("/orders")
+            router.replace("/orders");
            }else{
             toast.error(response.data.message)
            }
           break;
+
+
+          case 'stripe':
+            const responseStripe=await axios.post(backendUrl+ "/api/order/stripe",orderData,{
+              headers: { token }
+            });
+            if(responseStripe.data.success){
+              const { session_url }=responseStripe.data
+              window.location.replace(session_url)
+
+              queryClient.invalidateQueries({ queryKey: ["cart"] });
+              queryClient.invalidateQueries({ queryKey: ["orders"] });
+
+
+            }else{
+              toast.error(responseStripe.data.message)
+            }
+            break;
+
 
 
           default:
